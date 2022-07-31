@@ -1,20 +1,38 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { MdShoppingBasket } from 'react-icons/md';
 import { motion } from 'framer-motion';
+import { actionTypes } from '../context/reducer';
+import { useStateValue } from '../context/StateProvider';
 
 const RowContainer = ({ flag, data, scrollValue }) => {
-    console.log(data);
     const rowContainer = useRef();
+
+    const [{ cartItems }, dispatch] = useStateValue();
+
+    const [items, setItems] = useState([]);
+
     useEffect(() => {
         rowContainer.current.scrollLeft += scrollValue;
     }, [scrollValue]);
+
+    useEffect(() => {
+        addToCart();
+    }, [items]);
+
+    const addToCart = () => {
+        dispatch({
+            type: actionTypes.SET_CARTITEMS,
+            cartItems: items,
+        });
+        localStorage.setItem('cartItems', JSON.stringify(items));
+    };
     return (
         <div
             ref={rowContainer}
             className={`w-full my-12 flex items-center gap-3 scroll-smooth ${
                 flag
                     ? 'overflow-x-scroll scrollbar-none'
-                    : 'overflow-x-hidden flex-wrap'
+                    : 'overflow-x-hidden flex-wrap justify-center'
             }`}
         >
             {data &&
@@ -32,6 +50,7 @@ const RowContainer = ({ flag, data, scrollValue }) => {
                             />
                             <motion.div
                                 whileTap={{ scale: 0.75 }}
+                                onClick={() => setItems([...cartItems, item])}
                                 className='w-8 h-8 rounded-full bg-red-600 flex items-center justify-center cursor-pointer hover:shadow-md'
                             >
                                 <MdShoppingBasket className='text-white' />
@@ -40,7 +59,7 @@ const RowContainer = ({ flag, data, scrollValue }) => {
 
                         <div className='w-full flex flex-col items-end justify-end'>
                             <p className='text-textColor font-semibold text-base md:text-lg'>
-                                {item.category}
+                                {item.title}
                             </p>
                             <p className='mt-1 text-sm text-gray-500'>
                                 {item.calories} Calories
