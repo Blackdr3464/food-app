@@ -7,7 +7,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { app } from '../firebase.config';
 
 import Avatar from '../img/avatar.png';
-import Logo from '../img/Logo.png';
+import Logo from '../img/logo.png';
 import { useStateValue } from '../context/StateProvider';
 import { actionTypes } from '../context/reducer';
 
